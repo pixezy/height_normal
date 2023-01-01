@@ -1,0 +1,21 @@
+[gd_resource type="Shader" format=3 uid="uid://c8y5mwusq5xrg"]
+
+[resource]
+code = "shader_type spatial;
+#include \"res://$lib/funcs/normals.gdshaderinc\"
+#include \"res://$lib/funcs/shapes.gdshaderinc\"
+uniform float _normal_strength: hint_range(0.0, 1.0)=0.1; 
+
+void fragment() {
+	
+	
+	vec2 fgrid = fract(vec2(UV.x * 12.0,UV.y*6.0)); 
+	float c = circle(fgrid, 0.5,0.1); 
+	float s = rectanglef(fgrid, 0.5,0.5,0.2);  
+	float height = mix(c,s,sin(TIME*TAU)/2.0 + 0.5); 
+	vec3 n = heightToNormal(height,_normal_strength,VERTEX,NORMAL); 
+	NORMAL = n;
+//	ALBEDO = n; 
+	
+}
+"

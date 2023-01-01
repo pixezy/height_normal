@@ -1,0 +1,41 @@
+; Engine configuration file.
+; It's best edited using the editor UI and not directly,
+; since the parameters that go here are not all obvious.
+;
+; Format:
+;   [section] ; section goes between []
+;   param=value ; assign values to parameters
+
+config_version=5
+
+_global_script_classes=[{
+"base": "VisualShaderNodeCustom",
+"class": &"VisualShaderNodeCircleShape",
+"language": &"GDScript",
+"path": "res://$lib/custom_nodes/Shapes/Circle.gd"
+}, {
+"base": "VisualShaderNodeCustom",
+"class": &"VisualShaderNodeHeightToNormal",
+"language": &"GDScript",
+"path": "res://$lib/custom_nodes/Normals/HeightToNormal.gd"
+}, {
+"base": "VisualShaderNodeCustom",
+"class": &"VisualShaderNodeRectangleShape",
+"language": &"GDScript",
+"path": "res://$lib/custom_nodes/Shapes/Rectangle.gd"
+}]
+_global_script_class_icons={
+"VisualShaderNodeCircleShape": "",
+"VisualShaderNodeHeightToNormal": "",
+"VisualShaderNodeRectangleShape": ""
+}
+
+[application]
+
+config/name="Shader_002_heitonormal"
+config/features=PackedStringArray("4.0", "Forward Plus")
+config/icon="res://icon.svg"
+
+[dotnet]
+
+project/assembly_name="Shader_002_heitonormal"

@@ -1,0 +1,72 @@
+[gd_resource type="VisualShader" load_steps=6 format=3 uid="uid://n4jhubeqmoi1"]
+
+[ext_resource type="Script" path="res://$lib/custom_nodes/Normals/HeightToNormal.gd" id="1_vh47f"]
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_unkxy"]
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_15ef0"]
+width = 1024
+height = 1024
+seamless = true
+noise = SubResource("FastNoiseLite_unkxy")
+
+[sub_resource type="VisualShaderNodeTexture" id="VisualShaderNodeTexture_gbvcu"]
+texture = SubResource("NoiseTexture2D_15ef0")
+
+[sub_resource type="VisualShaderNodeCustom" id="VisualShaderNodeCustom_mqxgm"]
+default_input_values = [0, 0.0, 1, 0.02]
+initialized = true
+script = ExtResource("1_vh47f")
+
+[resource]
+code = "shader_type spatial;
+uniform sampler2D tex_frg_4;
+
+
+// HeightToNormal
+	
+	vec3 heightToNormal(float height,float strength,vec3 vertex,vec3 normal){
+		vec3 worldDerivativeX = dFdx(vertex);
+		vec3 worldDerivativeY = dFdy(vertex);
+		
+		vec3 crossX = cross(normal, worldDerivativeX);
+		vec3 crossY = cross( worldDerivativeY,normal);	
+		float d = dot(worldDerivativeX,crossY);
+		float sgn = d < 0.0 ? (-1.0) : 1.0;
+		float surface = sgn / max(0.00000000000001192093, abs(d));
+
+		float dHdx = dFdx(height);
+		float dHdy = dFdy(height);
+		vec3 surfGrad = surface * (dHdx*crossY + dHdy*crossX);
+		return normalize(normal - (strength * surfGrad));
+	}
+	
+
+void fragment() {
+// Texture2D:4
+	vec4 n_out4p0 = texture(tex_frg_4, UV);
+
+
+	vec3 n_out5p0;
+// HeightToNormal:5
+	float n_in5p1 = 0.02000;
+	{
+		n_out5p0
+			 = heightToNormal(n_out4p0.x,n_in5p1,VERTEX,NORMAL);
+			
+	}
+
+
+// Output:0
+	NORMAL = n_out5p0;
+
+
+}
+"
+graph_offset = Vector2(-265.002, 80.2)
+nodes/fragment/0/position = Vector2(440, 200)
+nodes/fragment/4/node = SubResource("VisualShaderNodeTexture_gbvcu")
+nodes/fragment/4/position = Vector2(-180, 80)
+nodes/fragment/5/node = SubResource("VisualShaderNodeCustom_mqxgm")
+nodes/fragment/5/position = Vector2(162.997, 256.64)
+nodes/fragment/connections = PackedInt32Array(4, 0, 5, 0, 5, 0, 0, 8)
